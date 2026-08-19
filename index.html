@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="google-site-verification" content="Yz_QDBcUuIT-V8xXmki2eVXqb2NK9TudI9BRPQDbYxs" />
+  <title>Brilliant Gibran — QUANTUM OBSERVATORY</title>
+  <link rel="canonical" href="https://brilliantgibranportofolio.my.id/" />
+  <meta name="description" content="CS student in Jakarta building across UX, PostgreSQL, Docker/Hadoop, and network security. Open to internships and freelance — remote or hybrid." />
+
+  <!-- ── FAVICON ── -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230f0f0f'/%3E%3Ctext x='16' y='22' font-family='sans-serif' font-size='16' font-weight='bold' fill='white' text-anchor='middle'%3EQO%3C/text%3E%3C/svg%3E" />
+
+  <meta name="theme-color" content="#111113" />
+
+  <!-- ── FONTS ── -->
+  <link rel="preload" href="fonts/dmserif-400.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="fonts/scp-var.woff2" as="font" type="font/woff2" crossorigin />
+
+  <!-- ── 2026 PROCEDURAL ENGINE IMPORT MAP ── -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+      "gsap": "https://cdn.jsdelivr.net/npm/gsap@3.12.5/index.js",
+      "gsap/ScrollTrigger": "https://cdn.jsdelivr.net/npm/gsap@3.12.5/ScrollTrigger.js"
+    }
+  }
+  </script>
+
+  <!-- ── CSS ARCHITECTURE ── -->
+  <style>
+    /* Reset & Fonts */
+    @font-face { font-family: 'Inter'; font-style: normal; font-weight: 400 900; font-display: swap; src: url('fonts/inter-var.woff2') format('woff2'); }
+    @font-face { font-family: 'Source Code Pro'; font-style: normal; font-weight: 400 700; font-display: swap; src: url('fonts/scp-var.woff2') format('woff2'); }
+    @font-face { font-family: 'DM Serif Display'; font-style: normal; font-weight: 400; font-display: swap; src: url('fonts/dmserif-400.woff2') format('woff2'); }
+
+    :root {
+      --bg: #0a0a0c;
+      --fg: #ffffff;
+      --fg-faint: #6e6e76;
+      --accent: #1e9fff;
+      --font-ui: 'Inter', sans-serif;
+      --font-mono: 'Source Code Pro', monospace;
+      --font-serif: 'DM Serif Display', serif;
+    }
+    
+    html.xray-mode {
+      --bg: #000508;
+      --fg: #00ffff;
+      --fg-faint: #008888;
+      --accent: #ff00ff;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; cursor: none; }
+    body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+    
+    /* Custom Cursor */
+    #custom-cursor {
+      position: fixed; top: 0; left: 0; width: 24px; height: 24px; border: 1px solid var(--accent); border-radius: 50%;
+      pointer-events: none; z-index: 9999; transform: translate(-50%, -50%); transition: width 0.2s, height 0.2s, background 0.2s;
+    }
+    #custom-cursor.active { width: 12px; height: 12px; background: var(--accent); }
+    html.xray-mode #custom-cursor { border-radius: 0; border-color: #00ffff; }
+
+    /* WebGL Canvas */
+    #webgl-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: auto; }
+
+    /* Diagnostic HUD */
+    #diagnostic-hud {
+      position: fixed; top: 20px; left: 20px; font-family: var(--font-mono); font-size: 10px; color: #00ffff;
+      pointer-events: none; z-index: 1000; opacity: 0; display: none; flex-direction: column; gap: 4px;
+    }
+    #diagnostic-hud.visible { opacity: 1; display: flex; }
+    .hud-line { padding: 4px 8px; border: 1px solid rgba(0,255,255,0.3); background: rgba(0,10,15,0.8); }
+
+    /* Layout Shell */
+    .container { position: relative; z-index: 1; max-width: 1400px; margin: 0 auto; padding: 0 5vw; }
+    section { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 120px 0; }
+
+    /* Nav */
+    nav { position: fixed; top: 0; left: 0; width: 100%; padding: 24px 5vw; display: flex; justify-content: space-between; z-index: 100; mix-blend-mode: difference; }
+    .nav-logo { font-family: var(--font-mono); font-weight: 700; font-size: 14px; text-transform: uppercase; letter-spacing: 0.1em; }
+    .nav-links { display: flex; gap: 32px; font-family: var(--font-mono); font-size: 12px; }
+    .nav-links button { background: none; border: none; color: inherit; font-family: inherit; font-size: inherit; outline: none; }
+
+    /* Hero */
+    #hero { align-items: flex-start; }
+    .status-pill { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 11px; border: 1px solid rgba(255,255,255,0.2); padding: 6px 12px; border-radius: 4px; margin-bottom: 32px; }
+    .status-dot { width: 6px; height: 6px; border-radius: 50%; background: #28C840; box-shadow: 0 0 8px #28C840; }
+    .hero-title { font-family: var(--font-serif); font-size: clamp(3rem, 8vw, 8rem); line-height: 1; margin-bottom: 24px; text-transform: uppercase; perspective: 1000px; }
+    .hero-title .char { display: inline-block; }
+    .hero-tagline { font-size: clamp(1.2rem, 3vw, 2rem); color: var(--fg-faint); max-width: 800px; line-height: 1.4; margin-bottom: 64px; }
+    
+    .hero-metrics { display: flex; gap: 48px; font-family: var(--font-mono); }
+    .metric-val { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
+    .metric-label { font-size: 11px; color: var(--fg-faint); text-transform: uppercase; letter-spacing: 0.1em; }
+
+    /* Section Labels */
+    .section-label { font-family: var(--font-mono); font-size: 12px; color: var(--accent); margin-bottom: 48px; letter-spacing: 0.1em; text-transform: uppercase; }
+
+    /* Typography Defaults */
+    h2.heading { font-family: var(--font-serif); font-size: clamp(2rem, 5vw, 4rem); line-height: 1.1; margin-bottom: 40px; }
+    p { font-size: 1.125rem; line-height: 1.6; color: var(--fg-faint); max-width: 680px; margin-bottom: 24px; }
+
+    /* Project Constellation Explorer UI */
+    .project-explorer { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; height: 70vh; align-items: center; }
+    .project-list { display: flex; flex-direction: column; gap: 24px; }
+    .project-row { display: flex; align-items: baseline; gap: 24px; padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,0.1); transition: opacity 0.3s, transform 0.3s; }
+    .project-row.hovered { transform: translateX(20px); border-color: rgba(255,255,255,0.4); }
+    .p-index { font-family: var(--font-mono); font-size: 12px; color: var(--fg-faint); }
+    .p-title { font-size: 1.5rem; font-weight: 600; }
+    .p-category { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.05em; text-transform: uppercase; }
+
+    /* Detail Panel */
+    .detail-panel { position: fixed; top: 0; right: -100%; width: 50vw; height: 100vh; background: rgba(10, 10, 12, 0.85); backdrop-filter: blur(20px); border-left: 1px solid rgba(255,255,255,0.1); padding: 80px; z-index: 200; transition: right 0.5s cubic-bezier(0.16, 1, 0.3, 1); overflow-y: auto; }
+    .detail-panel.open { right: 0; }
+    .detail-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 64px; }
+    .detail-status { font-family: var(--font-mono); font-size: 11px; border: 1px solid; padding: 4px 12px; border-radius: 4px; display: inline-flex; align-items: center; gap: 6px; }
+    .close-btn { font-family: var(--font-mono); font-size: 12px; color: var(--fg); background: none; border: none; letter-spacing: 0.1em; }
+    .detail-title { font-family: var(--font-serif); font-size: 3rem; line-height: 1; margin-bottom: 16px; }
+    .detail-meta { font-family: var(--font-mono); font-size: 12px; margin-bottom: 40px; }
+    .detail-role { font-family: var(--font-mono); font-size: 13px; color: #fff; margin-bottom: 24px; padding-left: 16px; border-left: 2px solid var(--accent); }
+    .detail-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 48px; }
+    .tag { font-family: var(--font-mono); font-size: 10px; padding: 4px 8px; border: 1px solid rgba(255,255,255,0.2); }
+    .detail-evidence { margin-bottom: 48px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.1); padding: 24px; }
+    .detail-evidence h4 { font-family: var(--font-mono); font-size: 11px; color: var(--fg-faint); margin-bottom: 16px; letter-spacing: 0.1em; }
+    .detail-evidence li { font-size: 0.9rem; margin-bottom: 8px; margin-left: 16px; color: #ddd; }
+    .detail-actions { display: flex; gap: 16px; }
+    .action-btn { font-family: var(--font-mono); font-size: 11px; padding: 12px 24px; background: #fff; color: #000; text-decoration: none; text-transform: uppercase; letter-spacing: 0.1em; }
+    .action-btn.outline { background: none; color: #fff; border: 1px solid rgba(255,255,255,0.3); }
+
+    /* Utility Grids */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.1); padding: 32px; }
+    .card-date { font-family: var(--font-mono); font-size: 11px; color: var(--accent); margin-bottom: 16px; }
+    .card-title { font-size: 1.25rem; font-weight: 600; margin-bottom: 8px; }
+    .card-sub { font-family: var(--font-mono); font-size: 12px; color: var(--fg-faint); margin-bottom: 24px; }
+    
+    /* Contact */
+    .contact-form { max-width: 600px; display: flex; flex-direction: column; gap: 24px; margin-top: 48px; }
+    .form-input, .form-textarea { width: 100%; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.2); padding: 16px; color: #fff; font-family: var(--font-ui); font-size: 1rem; outline: none; transition: border-color 0.3s; }
+    .form-input:focus, .form-textarea:focus { border-color: var(--accent); }
+    .form-submit { align-self: flex-start; padding: 16px 32px; background: #fff; color: #000; font-family: var(--font-mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; border: none; }
+
+    @media (max-width: 900px) {
+      .project-explorer { grid-template-columns: 1fr; }
+      .detail-panel { width: 100vw; padding: 40px 5vw; }
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+      nav { mix-blend-mode: normal; background: rgba(10,10,12,0.9); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- WebGL Background -->
+  <canvas id="webgl-canvas"></canvas>
+
+  <!-- Custom Interaction Cursor -->
+  <div id="custom-cursor"></div>
+
+  <!-- X-Ray Diagnostic HUD -->
+  <div id="diagnostic-hud">
+    <div class="hud-line">[OPEN ANATOMY v2026]</div>
+    <div class="hud-line" id="hud-fps">FPS: --</div>
+    <div class="hud-line" id="hud-draws">CALLS: --</div>
+    <div class="hud-line" id="hud-tris">TRIS: --</div>
+    <div class="hud-line" id="hud-geom">GEOM: --</div>
+  </div>
+
+  <nav>
+    <div class="nav-logo">Brilliant Gibran</div>
+    <div class="nav-links">
+      <button id="xray-toggle">[X-RAY: OFF]</button>
+      <a href="mailto:brilliantgibran16@gmail.com" style="color:inherit;text-decoration:none">[HIRE ME]</a>
+    </div>
+  </nav>
+
+  <!-- Detail Panel for Project Explorer -->
+  <div id="project-detail-panel" class="detail-panel"></div>
+
+  <main class="container">
+    
+    <section id="hero">
+      <div class="status-pill">
+        <div class="status-dot"></div> OPEN TO INTERNSHIPS
+      </div>
+      <h1 class="hero-title">
+        <span class="char">B</span><span class="char">R</span><span class="char">I</span><span class="char">L</span><span class="char">L</span><span class="char">I</span><span class="char">A</span><span class="char">N</span><span class="char">T</span><br>
+        <span class="char">G</span><span class="char">I</span><span class="char">B</span><span class="char">R</span><span class="char">A</span><span class="char">N</span>
+      </h1>
+      <p class="hero-tagline">
+        Figma to PostgreSQL to Docker — then I try to break it with Kali. Computer Science student engineering across UX, Distributed Systems, and Network Security.
+      </p>
+      <div class="hero-metrics">
+        <div class="metric">
+          <div class="metric-val">1st Year</div>
+          <div class="metric-label">CS Student</div>
+        </div>
+        <div class="metric">
+          <div class="metric-val">7</div>
+          <div class="metric-label">Systems Built</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="about">
+      <div class="section-label">// about me</div>
+      <div class="grid-2">
+        <div>
+          <h2 class="heading reveal">Built to be inspected.</h2>
+          <p class="reveal">Computer Science student at Cakrawala University, building across the stack — from UX research and high-fidelity prototypes, to relational database design, containerized deployments, and network security labs.</p>
+          <p class="reveal">The best problems are the ones with a real person on the other end. I'm at my best when there's a messy requirement to structure, a system to architect, or a workflow to make less painful.</p>
+        </div>
+        <div class="reveal">
+          <img src="id-photo.jpg" alt="ID Photo" style="width: 120px; filter: grayscale(100%) contrast(1.2); mix-blend-mode: screen;" />
+          <div style="font-family: var(--font-mono); font-size: 11px; color: var(--fg-faint); margin-top: 16px;">
+            Full Name: Brilliant Gibran Adhinata J.<br>
+            Location: Jakarta, Indonesia<br>
+            Institution: Cakrawala University
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="projects">
+      <div class="section-label">// project constellation</div>
+      <div class="project-explorer">
+        <div class="project-list" id="project-list-container">
+          <!-- Injected via main.js -->
+        </div>
+        <div class="project-3d-hint" style="font-family:var(--font-mono); font-size:11px; color:var(--fg-faint); text-align:right;">
+          [ ← SELECT NODE IN SPATIAL FIELD ]
+        </div>
+      </div>
+    </section>
+
+    <section id="experience">
+      <div class="section-label">// experience</div>
+      <div class="grid-3">
+        <div class="card reveal">
+          <div class="card-date">May 2026 – Present</div>
+          <div class="card-title">Halal Product Companion (PPPH)</div>
+          <div class="card-sub">LPPPH Edukasi Wakaf Indonesia</div>
+          <p style="font-size: 0.95rem;">Administered the Free Halal Certificate Program (SEHATI), delivering direct certification guidance to MSMEs. Verified processes against BPJPH regulatory standards.</p>
+        </div>
+        <div class="card reveal">
+          <div class="card-date">2024 – Present</div>
+          <div class="card-title">Local Guide Contributor (Level 5)</div>
+          <div class="card-sub">Google Maps Community</div>
+          <p style="font-size: 0.95rem;">Contributed accurate spatial data, photos, and structured reviews to improve location precision across the platform.</p>
+        </div>
+        <div class="card reveal">
+          <div class="card-date">2025 – Present</div>
+          <div class="card-title">B.Sc. Computer Science</div>
+          <div class="card-sub">Cakrawala University · Jakarta</div>
+          <p style="font-size: 0.95rem;">Applied coursework in Software Engineering, Database Architecture, Network Security, and Distributed Computing grounded in the IDEAL Framework.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="certifications">
+      <div class="section-label">// licenses & certifications</div>
+      <div class="grid-3">
+        <div class="card reveal">
+          <div class="card-date">June 2026</div>
+          <div class="card-title">Play It Safe: Manage Security Risks</div>
+          <div class="card-sub">Google · Credential: 3D82LU8402VV</div>
+        </div>
+        <div class="card reveal">
+          <div class="card-date">June 2026</div>
+          <div class="card-title">Foundations of Cybersecurity</div>
+          <div class="card-sub">Google · Course 1</div>
+        </div>
+        <div class="card reveal">
+          <div class="card-date">April 2026</div>
+          <div class="card-title">Halal Product Process Training (PPPH)</div>
+          <div class="card-sub">BPJPH · ID: 2601003315</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="skills">
+      <div class="section-label">// skills</div>
+      <div class="grid-2">
+        <div class="card reveal">
+          <div class="card-title">Design & UX</div>
+          <div class="detail-tags" style="margin-bottom:0; margin-top:16px;">
+            <span class="tag">Figma</span> <span class="tag">Prototyping</span> <span class="tag">User Research</span> <span class="tag">HCD</span> <span class="tag">Usability Testing (SUS)</span>
+          </div>
+        </div>
+        <div class="card reveal">
+          <div class="card-title">Backend & Data</div>
+          <div class="detail-tags" style="margin-bottom:0; margin-top:16px;">
+            <span class="tag">Python</span> <span class="tag">PostgreSQL</span> <span class="tag">SQL</span> <span class="tag">OOP</span> <span class="tag">3NF Normalization</span>
+          </div>
+        </div>
+        <div class="card reveal">
+          <div class="card-title">Cloud & DevOps</div>
+          <div class="detail-tags" style="margin-bottom:0; margin-top:16px;">
+            <span class="tag">Docker</span> <span class="tag">Kubernetes</span> <span class="tag">Hadoop</span> <span class="tag">Ubuntu</span> <span class="tag">Distributed Computing</span>
+          </div>
+        </div>
+        <div class="card reveal">
+          <div class="card-title">Networking & Security</div>
+          <div class="detail-tags" style="margin-bottom:0; margin-top:16px;">
+            <span class="tag">Kali Linux</span> <span class="tag">Metasploit</span> <span class="tag">Pen Testing</span> <span class="tag">Mikrotik</span> <span class="tag">GNS3</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact">
+      <div class="section-label" style="text-align:center;">// contact</div>
+      <h2 class="heading reveal" style="text-align:center;">Put this to work.</h2>
+      <p class="reveal" style="margin: 0 auto; text-align:center;">Open to internships and freelance builds — or a straight technical grilling.</p>
+      
+      <form class="contact-form reveal" style="margin: 48px auto 0;" action="https://formspree.io/f/meewjndr" method="POST">
+        <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" style="display:none;" />
+        <div class="grid-2" style="gap:16px;">
+          <input class="form-input" type="text" name="name" placeholder="Your full name" required />
+          <input class="form-input" type="email" name="email" placeholder="your@email.com" required />
+        </div>
+        <input class="form-input" type="text" name="subject" placeholder="What's this about?" style="margin-top:16px;"/>
+        <textarea class="form-textarea" name="message" rows="5" placeholder="Tell me about your project..." required style="margin-top:16px;"></textarea>
+        <button type="submit" class="form-submit" style="margin-top:16px;">Send Message</button>
+      </form>
+    </section>
+
+  </main>
+
+  <script type="module" src="lib/main.js"></script>
+</body>
+</html>

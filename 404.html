@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="robots" content="noindex" />
+  <title>404 — Brilliant Gibran</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230f0f0f'/%3E%3Ctext x='16' y='22' font-family='serif' font-size='16' font-weight='bold' fill='white' text-anchor='middle'%3EBG%3C/text%3E%3C/svg%3E" />
+  <meta name="theme-color" content="#111113" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#f5f5f5" media="(prefers-color-scheme: light)" />
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #111113;
+      --text-primary: #f0f0f0;
+      --text-secondary: #a0a0a8;
+      --text-faint: #7c7c86;
+      --border-strong: rgba(255, 255, 255, .25);
+      --accent: #1e9fff;
+      --selection-bg: #f0f0f0;
+      --selection-text: #0f0f0f;
+      --dot: rgba(255, 255, 255, .03);
+      --ease: cubic-bezier(.22, 1, .36, 1);
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg: #f5f5f5;
+        --text-primary: #0f0f0f;
+        --text-secondary: #555;
+        --text-faint: #8a8a8a;
+        --border-strong: rgba(0, 0, 0, .2);
+        --selection-bg: #0f0f0f;
+        --selection-text: #fff;
+        --dot: rgba(0, 0, 0, .03);
+      }
+    }
+
+    html {
+      -webkit-font-smoothing: antialiased;
+    }
+
+    ::selection {
+      background: var(--selection-bg);
+      color: var(--selection-text);
+    }
+
+    body {
+      min-height: 100vh;
+      min-height: 100svh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background: var(--bg);
+      background-image: radial-gradient(circle, var(--dot) 1px, transparent 1px);
+      background-size: 8px 8px;
+      color: var(--text-primary);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      text-align: center;
+    }
+
+    .tag {
+      font-family: 'Source Code Pro', ui-monospace, monospace;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    h1 {
+      font-family: 'DM Serif Display', Georgia, 'Times New Roman', serif;
+      font-weight: 400;
+      font-size: clamp(6rem, 24vw, 11rem);
+      line-height: 1;
+      letter-spacing: -.03em;
+      margin: 16px 0 20px;
+    }
+
+    p {
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--text-secondary);
+      max-width: 38ch;
+      margin: 0 auto 36px;
+      text-wrap: balance;
+    }
+
+    a {
+      display: inline-block;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: .02em;
+      color: var(--text-primary);
+      text-decoration: none;
+      padding-bottom: 4px;
+      border-bottom: 1px solid var(--border-strong);
+      transition: color .25s var(--ease), border-color .25s var(--ease);
+    }
+
+    a .ar {
+      display: inline-block;
+      transition: transform .25s var(--ease);
+    }
+
+    a:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    a:hover .ar {
+      transform: translateX(-4px);
+    }
+
+    a:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 4px;
+      border-radius: 2px;
+    }
+
+    @keyframes rise {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    main>* {
+      animation: rise .7s var(--ease) both;
+    }
+
+    main>*:nth-child(2) {
+      animation-delay: .08s;
+    }
+
+    main>*:nth-child(3) {
+      animation-delay: .16s;
+    }
+
+    main>*:nth-child(4) {
+      animation-delay: .24s;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      main>* {
+        animation: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <div class="tag">// route not found</div>
+    <h1>404</h1>
+    <p>This route is outside the anatomy — nothing to inspect here. The evidence lives one level up.</p>
+    <a href="/"><span class="ar">←</span>&nbsp; Back to the evidence</a>
+  </main>
+</body>
+
+</html>
